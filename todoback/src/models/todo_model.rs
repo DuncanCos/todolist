@@ -13,3 +13,16 @@ pub struct ToDo {
     pub status: String,
     pub created_at: DateTime<Utc>,
 }
+
+#[derive(Serialize, Deserialize, Debug, FromRow, Default)]
+pub struct ToDoCreateBody {
+    pub title: String,
+    pub description: String,
+}
+
+
+#[derive(Serialize, Deserialize, Debug, FromRow, Default)]
+pub struct ToDoUpdateBody {
+    pub title: String,
+    pub description: String,
+}
