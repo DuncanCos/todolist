@@ -1,16 +1,21 @@
-import React, { useState } from "react";
-import api from "./api";
+import React,{useState,useEffect} from 'react'
+import api from './api';
 
-export default function CreateTodo({ modal, closeModal, reseter }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+export default function UpdateTodo({ modal, closeModal, reseter, info }) {
+  const [title, setTitle] = useState(info.title|"");
+  const [description, setDescription] = useState(info.description|"");
 
-  const createTodo = () => {
+  useEffect(()=> {
+    setTitle(info.title)
+    setDescription(info.description)
+  },[info])
+
+  const updateTodo = () => {
     if (title == "" && description == "") {
       alert("cant create todo with nothing");
     } else {
       api
-        .post("/todo/todo", {
+        .put(`/todo/todo/${info.id}`, {
           title,
           description,
         })
@@ -57,7 +62,7 @@ export default function CreateTodo({ modal, closeModal, reseter }) {
             <button className="btn btn-error" onClick={cleanEnd}>
               annuler
             </button>
-            <button className="btn btn-primary" onClick={createTodo}>
+            <button className="btn btn-primary" onClick={updateTodo}>
               confirmer
             </button>
           </div>

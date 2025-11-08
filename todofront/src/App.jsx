@@ -1,12 +1,25 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-
+import { useState, useEffect } from "react";
+import ToDoCard from "./components/ToDoCard";
+import UpdateTodo from "./components/UpdateTodo";
+import api from "./components/api";
 import CreateTodo from "./components/CreateTodo";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [todos, setTodos] = useState([]);
   const [createModal, setCreateModal] = useState(false);
+  const [reseter, setReset] = useState(false);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [chosedTodo, setChosedTodo] = useState({});
+
+  const getAllToDos = () => {
+    api.get("/todo/todo").then((response) => {
+      setTodos(response.data);
+    });
+  };
+
+  useEffect(() => {
+    getAllToDos();
+  }, [reseter]);
 
   return (
     <>
@@ -14,20 +27,24 @@ function App() {
         <div className="w-full max-w-2xl  text-center p-6 rounded-2xl shadow-lg">
           <h1 className="text-4xl font-bold mb-6">my todo list</h1>
           <div className="flex flex-col gap-4">
-            <div className="btn btn-primary m-4" onClick={()=> setCreateModal(!createModal)}>creer</div>
-            <div className="card  bg-base-300 card-md shadow-sm ">
-              {" "}
-              <div className="card-body">
-                <h2 className="card-title">Medium Card</h2>
-                <p>
-                  A card component has a figure, a body part, and inside body
-                  there are title and actions parts
-                </p>
-                <div className="justify-end card-actions">
-                  <button className="btn btn-primary">Done</button>
-                </div>
-              </div>
+            <div
+              className="btn btn-primary m-4"
+              onClick={() => setCreateModal(!createModal)}
+            >
+              creer
             </div>
+
+            {todos.map((todo) => (
+              <ToDoCard
+                key={todo.id}
+                info={todo}
+                reseter={() => setReset(!reseter)}
+                updating={
+                  () => setUpdateModal(!updateModal)
+                }
+                chosingUpdated={(e)=>setChosedTodo(e)}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -36,6 +53,16 @@ function App() {
         closeModal={() => {
           setCreateModal(!createModal);
         }}
+        reseter={() => setReset(!reseter)}
+      />
+
+      <UpdateTodo
+        modal={updateModal}
+        closeModal={() => {
+          setUpdateModal(!updateModal);
+        }}
+        info={chosedTodo}
+        reseter={() => setReset(!reseter)}
       />
     </>
   );
