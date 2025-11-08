@@ -108,3 +108,22 @@ pub async fn done_todo(
         }
     }
 }
+
+pub async fn undone_todo(
+    Extension(pool): Extension<PgPool>,
+    Path(id): extract::Path<i32>,
+    // extract::Json(body): extract::Json<Body>,
+) -> impl IntoResponse {
+    match sqlx::query("UPDATE todos SET status='todo' WHERE id = $1 ")
+        .bind(id)
+        .execute(&pool)
+        .await
+    {
+        Ok(_result) => (StatusCode::OK, "done".to_string()).into_response(),
+        Err(err) => {
+            eprintln!("Database query failed: {:?}", err);
+            let message = "Unable to fetch users".to_string();
+            (StatusCode::INTERNAL_SERVER_ERROR, message).into_response()
+        }
+    }
+}
