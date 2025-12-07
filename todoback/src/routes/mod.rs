@@ -1,6 +1,4 @@
-use axum::{
-    Extension, Router,
-};
+use axum::{Extension, Router};
 use sqlx::postgres::PgPool;
 use tower_http::cors::CorsLayer;
 
@@ -8,13 +6,16 @@ use http::HeaderValue;
 
 mod todo_route;
 
-
 use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
 
 use tracing::Level;
 
-
-
+// use crate::middlewares::auth::auth_middleware;
+use clerk_rs::{
+    ClerkConfiguration,
+    clerk::Clerk,
+    validators::{axum::ClerkLayer, jwks::MemoryCacheJwksProvider},
+};
 
 pub fn routing(pool: PgPool) -> Router {
     let cors = CorsLayer::new()
@@ -38,9 +39,21 @@ pub fn routing(pool: PgPool) -> Router {
         ])
         .allow_credentials(true);
 
+    let clerk_key = std::env::var("CLERK_SECRET_KEY").expect("CLERK_SECRET_KEY must be set");
+
+    let config = ClerkConfiguration::new(None, None, Some(clerk_key), None);
+    let clerk = Clerk::new(config);
+
     let app = Router::new()
         .nest("/todo", todo_route::todo_routing())
         .layer(Extension(pool))
+        // .layer(from_fn(auth_middleware))
+        .layer(ClerkLayer::new(
+            MemoryCacheJwksProvider::new(clerk),
+            None,
+            true,
+        ))
+        // .layer(from_fn(auth_middleware))
         .layer(cors)
         .layer(
             TraceLayer::new_for_http()

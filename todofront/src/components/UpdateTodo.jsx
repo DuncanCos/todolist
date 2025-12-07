@@ -1,16 +1,20 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import api from './api';
+import { useAuth } from '@clerk/clerk-react'
 
 export default function UpdateTodo({ modal, closeModal, reseter, info }) {
-  const [title, setTitle] = useState(info.title|"");
-  const [description, setDescription] = useState(info.description|"");
+  const [title, setTitle] = useState(info.title | "");
+  const [description, setDescription] = useState(info.description | "");
 
-  useEffect(()=> {
+  const { getToken } = useAuth();
+
+  useEffect(() => {
     setTitle(info.title)
     setDescription(info.description)
-  },[info])
+  }, [info])
 
-  const updateTodo = () => {
+  const updateTodo = async () => {
+    const token = await getToken()
     if (title == "" && description == "") {
       alert("cant create todo with nothing");
     } else {
@@ -18,6 +22,10 @@ export default function UpdateTodo({ modal, closeModal, reseter, info }) {
         .put(`/todo/todo/${info.id}`, {
           title,
           description,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           reseter()

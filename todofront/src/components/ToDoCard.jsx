@@ -1,13 +1,23 @@
 import React from "react";
 import api from "./api";
 
+import { useAuth } from '@clerk/clerk-react'
+
 export default function ToDoCard({ info, reseter, updating, chosingUpdated }) {
   const todostyle = "card  bg-base-300 card-md shadow-sm";
   const donestyle = "card  bg-base-200 card-md shadow-sm";
 
-  const tododone = () => {
+  const { getToken } = useAuth();
+
+  const tododone = async () => {
+    const token = await getToken()
+
     api
-      .post(`/todo/todo/done/${info.id}`)
+      .post(`/todo/todo/done/${info.id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         reseter();
       })
@@ -15,9 +25,14 @@ export default function ToDoCard({ info, reseter, updating, chosingUpdated }) {
         alert("error done");
       });
   };
-   const todoundone = () => {
+  const todoundone = async () => {
+    const token = await getToken()
     api
-      .post(`/todo/todo/undone/${info.id}`)
+      .post(`/todo/todo/undone/${info.id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         reseter();
       })
@@ -26,9 +41,14 @@ export default function ToDoCard({ info, reseter, updating, chosingUpdated }) {
       });
   };
 
-  const removetodo = () => {
+  const removetodo = async () => {
+    const token = await getToken()
     api
-      .delete(`/todo/todo/${info.id}`)
+      .delete(`/todo/todo/${info.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         reseter();
       })
@@ -38,7 +58,14 @@ export default function ToDoCard({ info, reseter, updating, chosingUpdated }) {
   }
 
 
-  const updateTodos = () => {
+  const updateTodos = async () => {
+    const token = await getToken()
+    api
+      .put(`/todo/todo/${info.id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
     chosingUpdated(info)
     updating()
   }

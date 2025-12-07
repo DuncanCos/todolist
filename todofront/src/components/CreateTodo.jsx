@@ -1,18 +1,26 @@
 import React, { useState } from "react";
 import api from "./api";
 
+import { useAuth } from '@clerk/clerk-react'
+
 export default function CreateTodo({ modal, closeModal, reseter }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const { getToken } = useAuth();
 
-  const createTodo = () => {
+  const createTodo = async () => {
     if (title == "" && description == "") {
       alert("cant create todo with nothing");
     } else {
+      const token = await getToken()
       api
         .post("/todo/todo", {
           title,
           description,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           reseter()

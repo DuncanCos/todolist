@@ -1,5 +1,6 @@
 use sqlx::postgres::PgPoolOptions;
 mod controllers;
+mod middlewares;
 mod models;
 mod routes;
 
