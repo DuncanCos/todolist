@@ -1,5 +1,6 @@
 use axum::{Extension, Router};
 use sqlx::postgres::PgPool;
+use tower_http::cors::Any;
 use tower_http::cors::CorsLayer;
 
 use http::HeaderValue;
@@ -33,13 +34,7 @@ pub fn routing(pool: PgPool) -> Router {
             http::Method::DELETE,
             http::Method::OPTIONS,
         ])
-        .allow_headers(vec![
-            http::header::AUTHORIZATION,
-            http::header::ACCEPT,
-            http::header::CONTENT_TYPE,
-            http::header::SET_COOKIE,
-            http::header::COOKIE,
-        ])
+        .allow_headers(Any)
         .allow_credentials(true);
 
     let clerk_key = std::env::var("CLERK_SECRET_KEY").expect("CLERK_SECRET_KEY must be set");
