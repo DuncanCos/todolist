@@ -49,6 +49,7 @@ pub fn routing(pool: PgPool) -> Router {
     let app = Router::new()
         .nest("/todo", todo_route::todo_routing())
         .layer(Extension(pool))
+        .layer(cors)
         // .layer(from_fn(auth_middleware))
         .layer(ClerkLayer::new(
             MemoryCacheJwksProvider::new(clerk),
@@ -56,7 +57,6 @@ pub fn routing(pool: PgPool) -> Router {
             true,
         ))
         // .layer(from_fn(auth_middleware))
-        .layer(cors)
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO)) // Log des requêtes entrantes
