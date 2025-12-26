@@ -44,13 +44,13 @@ pub fn routing(pool: PgPool) -> Router {
     let app = Router::new()
         .nest("/todo", todo_route::todo_routing())
         .layer(Extension(pool))
-        .layer(cors)
         // .layer(from_fn(auth_middleware))
         .layer(ClerkLayer::new(
             MemoryCacheJwksProvider::new(clerk),
             None,
             true,
         ))
+        .layer(cors)
         // .layer(from_fn(auth_middleware))
         .layer(
             TraceLayer::new_for_http()
