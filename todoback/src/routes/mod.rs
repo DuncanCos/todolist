@@ -24,6 +24,7 @@ pub fn routing(pool: PgPool) -> Router {
             HeaderValue::from_static("http://localhost:3000"),
             HeaderValue::from_static("http://127.0.0.1:5173"),
             HeaderValue::from_static("https://api.todo.dunkan.xyz"),
+            HeaderValue::from_static("https://todo.dunkan.xyz"),
         ])
         .allow_methods(vec![
             http::Method::GET,
