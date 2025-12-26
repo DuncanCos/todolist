@@ -8,7 +8,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-reac
 import { useAuth } from '@clerk/clerk-react'
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(null);
   const [createModal, setCreateModal] = useState(false);
   const [reseter, setReset] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
@@ -74,7 +74,7 @@ function App() {
                   creer
                 </div>
 
-                {todos.map((todo) => (
+                {todos ? todos.map((todo) => (
                   <ToDoCard
                     key={todo.id}
                     info={todo}
@@ -84,29 +84,31 @@ function App() {
                     }
                     chosingUpdated={(e) => setChosedTodo(e)}
                   />
-                ))}
+                )) : <p>no todo</p>}
               </div>
             </div>
           </div>
+
+          <CreateTodo
+            modal={createModal}
+            closeModal={() => {
+              setCreateModal(!createModal);
+            }}
+            reseter={() => setReset(!reseter)}
+          />
+
+          <UpdateTodo
+            modal={updateModal}
+            closeModal={() => {
+              setUpdateModal(!updateModal);
+            }}
+            info={chosedTodo}
+            reseter={() => setReset(!reseter)}
+          />
         </SignedIn>
 
 
-        <CreateTodo
-          modal={createModal}
-          closeModal={() => {
-            setCreateModal(!createModal);
-          }}
-          reseter={() => setReset(!reseter)}
-        />
 
-        <UpdateTodo
-          modal={updateModal}
-          closeModal={() => {
-            setUpdateModal(!updateModal);
-          }}
-          info={chosedTodo}
-          reseter={() => setReset(!reseter)}
-        />
       </div>
     </>
   );
