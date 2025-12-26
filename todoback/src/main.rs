@@ -15,7 +15,7 @@ use std::net::SocketAddr;
 async fn main() {
     dotenv::dotenv().ok();
     let _testingenv: String = dotenv::var("TEST").unwrap();
-    let dbconnection: String = dotenv::var("DB_CONNECTION").unwrap();
+    let dbconnection: String = dotenv::var("DATABASE_URL").unwrap();
     println!("Hello, world!");
 
     let subscriber = FmtSubscriber::builder()
@@ -37,9 +37,7 @@ async fn main() {
 
     // run our app with hyper, listening globally on port 8000
     println!("server launched on http://127.0.0.1:8080");
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
     axum::serve(
         listener,
         app.into_make_service_with_connect_info::<SocketAddr>(),

@@ -21,6 +21,7 @@ pub fn routing(pool: PgPool) -> Router {
     let cors = CorsLayer::new()
         .allow_origin([
             HeaderValue::from_static("http://localhost:5173"),
+            HeaderValue::from_static("http://localhost:3000"),
             HeaderValue::from_static("http://127.0.0.1:5173"),
         ])
         .allow_methods(vec![
