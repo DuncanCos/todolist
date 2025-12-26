@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15
+    image: postgres:latest
     container_name: my_postgres_todo
     environment:
       POSTGRES_USER: user
@@ -10,7 +10,31 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data # données persistantes
+      - postgres_data:/var/lib/postgresql # données persistantes
+
+  todoback:
+    build:
+      context: ./todoback
+      dockerfile: Dockerfile
+    container_name: todoback
+    env_file:
+      - "./todoback/.env"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  todofront:
+    build:
+      context: ./todofront
+      dockerfile: Dockerfile
+    container_name: todofront
+    env_file:
+      - "./todofront/.env"
+    ports:
+      - "3000:80"
+    depends_on:
+      - todoback
 
 volumes:
   postgres_data:

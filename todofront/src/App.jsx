@@ -47,8 +47,18 @@ function App() {
       <div className="flex justify-center  min-h-screen">
 
         <SignedOut>
-          <SignInButton />
+          <div className="w-full max-w-2xl  text-center p-6 rounded-2xl shadow-lg">
+            <h1 className="text-4xl font-bold mb-6">my todo list</h1>
+
+            <p className="text-2xl font-bold mb-6">you need to be signed in to see your todo list</p>
+
+            <div className="btn btn-primary">
+              <SignInButton />
+            </div>
+          </div>
         </SignedOut>
+
+
         <SignedIn>
           <div>
             <header>
